@@ -50,7 +50,6 @@ export default function(expression) {
 
     // Skip number
     else if (currentToken == Number(currentToken)) {
-      console.log('number', currentToken)
       // Do nothing, JSON.parse gives us this for free
     }
 
