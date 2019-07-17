@@ -1,14 +1,17 @@
-export default function(expression) {
+export default function(expression = '()') {
   const tokens = expression.trim().match(
     new RegExp(
       [
-        '(',                  // group of things that can be parsed:
+        '(',                   // group of things that can be parsed:
           [
-            '\\(',            // paren open
-            '\\)',            // paren close
+            '"[^"]*"',         // double-quoted string
+            '\'[^\']*\'',      // single-quoted string
+            '`[^`]*`',         // backtick-quoted string
+            '\\(',             // paren open
+            '\\)',             // paren close
             '[^\\s()"\'`+]+',  // everything that's not the above
           ].join('|'),
-        ')'                   // close group
+        ')'                    // close group
       ].join(''),
       'g'
     )
@@ -53,13 +56,8 @@ export default function(expression) {
       // Do nothing, JSON.parse gives us this for free
     }
 
-    // Skip double quotes
-    else if (currentToken === '"') {
-      // Do nothing, JSON.parse gives us this for free
-    }
-
     // Otherwise, handle as a string
-    else tokens[index] = '"' + currentToken.replace('"', '\\\"') + '"'
+    else tokens[index] = `"${currentToken.replace(/["'`]/g, '')}"`
 
     // Add commas between terms (no trailing commas)
     if (

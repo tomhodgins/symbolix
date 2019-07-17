@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width, initial-scale=1">
+<title>Symbolix test</title>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    line-height: 1.4;
+  }
+  code {
+    background: rgb(255, 255, 200);
+    padding: .125em .25em;
+  }
+</style>
+
+<h1>Symbolix test</h1>
+
+
+<h2 id=pass>Tests passed:</h2>
+<ul></ul>
+<h2 id=fail>Tests failed:</h2>
+<ul></ul>
+
+<script type=module>
+  import symbolix from '../index.js'
+
+  const tests = [
+
+    // Testing null input
+    {
+      name: 'Testing null input',
+      input: () => JSON.stringify(symbolix()),
+      expected: JSON.stringify([])
+    },
+
+    // Testing basic types
+    {
+      name: 'Testing parens',
+      input: () => JSON.stringify(symbolix(`
+        ()
+      `)),
+      expected: JSON.stringify([])
+    },
+    {
+      name: 'Testing null',
+      input: () => JSON.stringify(symbolix(`
+        null
+      `)),
+      expected: JSON.stringify(null)
+    },
+    {
+      name: 'Testing boolean',
+      input: () => JSON.stringify(symbolix(`
+        (true false)
+      `)),
+      expected: JSON.stringify([true, false])
+    },
+    {
+      name: 'Testing integer',
+      input: () => JSON.stringify(symbolix(`
+        (1 2 3)
+      `)),
+      expected: JSON.stringify([1, 2, 3])
+    },
+    {
+      name: 'Testing number',
+      input: () => JSON.stringify(symbolix(`
+        (-1 1e1 1.111)
+      `)),
+      expected: JSON.stringify([-1, 1e1, 1.111])
+    },
+    {
+      name: 'Testing unquoted string',
+      input: () => JSON.stringify(symbolix(`
+        (string)
+      `)),
+      expected: JSON.stringify(["string"])
+    },
+    {
+      name: 'Testing single quoted string',
+      input: () => JSON.stringify(symbolix(`
+        ('single quotes')
+      `)),
+      expected: JSON.stringify(['single quotes'])
+    },
+    {
+      name: 'Testing double quoted string',
+      input: () => JSON.stringify(symbolix(`
+        ("double quotes")
+      `)),
+      expected: JSON.stringify(["double quotes"])
+    },
+    {
+      name: 'Testing backtick string',
+      input: () => JSON.stringify(symbolix(`
+        (\`backtick string\`)
+      `)),
+      expected: JSON.stringify([`backtick string`])
+    },
+
+    // Rosetta code test
+    {
+      name: 'Rosetta code test',
+      input: () => JSON.stringify(symbolix(`
+        ((data "quoted data" 123 4.5)
+          (data (!@# (4.5) "(more" "data)")))
+      `)),
+      expected: JSON.stringify(
+        [['data', 'quoted data', 123, 4.5],
+          ['data', ['!@#', [4.5], "(more", "data)"]]]
+      )
+    },
+
+  ]
+
+  const results = tests.reduce((acc, test) => {
+      test.result = test.input()
+      test.result === test.expected
+        ? acc.pass.push(test)
+        : acc.fail.push(test)
+      return acc
+    },
+    {pass: [], fail: []}
+  )
+
+  const passed = results.pass.length
+  const failed = results.fail.length
+  const total = passed + failed
+
+  // populate results to page
+  document.querySelector('#pass').textContent = `Tests passed ${passed}/${total}:`
+  document.querySelector('#fail').textContent = `Tests failed ${failed}/${total}:`
+
+  results.pass.forEach(test => {
+    const tag = document.createElement('li')
+    tag.innerHTML = `
+      <details>
+        <summary>${test.name}</summary>
+        <h3>Test</h3>
+        <p><pre>${test.input.toString()}</pre></p>
+        <h3>Expected</h3>
+        <p><code>${test.expected}</code></p>
+        <h3>Result</h3>
+        <p><code>${test.result}</code></p>
+      </details>
+    `
+    return document.querySelector('#pass + ul').appendChild(tag)
+  })
+
+  results.fail.forEach(test => {
+    const tag = document.createElement('li')
+    tag.innerHTML = `
+      <details>
+        <summary style=text-decoration:line-through>${test.name}</summary>
+        <h3>Test</h3>
+        <p><code>${test.input.toString().slice(6)}</code></p>
+        <h3>Expected</h3>
+        <p><code>${test.expected}</code></p>
+        <h3>Result</h3>
+        <p><code>${test.result}</code></p>
+      </details>
+    `
+    return document.querySelector('#fail + ul').appendChild(tag)
+  })
+</script>
