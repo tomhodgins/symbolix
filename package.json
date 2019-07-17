@@ -1,0 +1,30 @@
+{
+  "name": "symbolix",
+  "version": "0.0.1",
+  "description": "A symbolic expression parser for JavaScript delivered as an ES module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tomhodgins/symbolix.git"
+  },
+  "keywords": [
+    "sexp",
+    "s-expression",
+    "sexpression",
+    "symbolix",
+    "expression",
+    "parser",
+    "read",
+    "consume",
+    "parse"
+  ],
+  "author": "Tommy Hodgins",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tomhodgins/symbolix/issues"
+  },
+  "homepage": "https://github.com/tomhodgins/symbolix#readme"
+}
