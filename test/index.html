@@ -68,49 +68,63 @@
     {
       name: 'Testing number',
       input: () => JSON.stringify(symbolix(`
-        (-1 1e1 1.111)
+        (-1.1 -1 1 1.1 +1 +1.1 1e1)
       `)),
-      expected: JSON.stringify([-1, 1e1, 1.111])
+      expected: JSON.stringify([-1.1, -1, 1, 1.1, +1, +1.1, 1e1])
     },
     {
       name: 'Testing unquoted string',
       input: () => JSON.stringify(symbolix(`
-        (string)
+        (string dash-separated underscore_separated)
       `)),
-      expected: JSON.stringify(["string"])
+      expected: JSON.stringify(["string", "dash-separated", "underscore_separated"])
     },
     {
       name: 'Testing single quoted string',
       input: () => JSON.stringify(symbolix(`
-        ('single quotes')
+        ('single quotes' 'word)
       `)),
-      expected: JSON.stringify(['single quotes'])
+      expected: JSON.stringify(['single quotes', 'word'])
     },
     {
       name: 'Testing double quoted string',
       input: () => JSON.stringify(symbolix(`
-        ("double quotes")
+        ("double quotes" "word)
       `)),
-      expected: JSON.stringify(["double quotes"])
+      expected: JSON.stringify(["double quotes", 'word'])
     },
     {
       name: 'Testing backtick string',
       input: () => JSON.stringify(symbolix(`
-        (\`backtick string\`)
+        (\`backtick string\` \`word)
       `)),
-      expected: JSON.stringify([`backtick string`])
+      expected: JSON.stringify([`backtick string`, `word`])
     },
 
     // String testing
     {
-      name: 'emoji',
+      name: 'Math symbols',
+      input: () => JSON.stringify(symbolix(`
+        (+ - / *)
+      `)),
+      expected: JSON.stringify(["+", "-", "/", "*"])
+    },
+    {
+      name: 'Weird characters',
+      input: () => JSON.stringify(symbolix(`
+        ('~!@#$%^&*_-={}[]|;:,<.>/?')
+      `)),
+      expected: JSON.stringify(["~!@#$%^&*_-={}[]|;:,<.>/?"])
+    },
+    {
+      name: 'Emoji',
       input: () => JSON.stringify(symbolix(`
         (🤔 💭)
       `)),
       expected: JSON.stringify(["🤔", "💭"])
     },
     {
-      name: 'unicode',
+      name: 'Unicode',
       input: () => JSON.stringify(symbolix(`
         ("uꎐꏳde ch🜇℀te₨")
       `)),

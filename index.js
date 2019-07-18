@@ -9,7 +9,7 @@ export default function(expression = '()') {
             '`[^`]*`',         // backtick-quoted string
             '\\(',             // paren open
             '\\)',             // paren close
-            '[^\\s()"\'`+]+',  // everything that's not the above
+            '[^\\s()"\'`]+',  // everything that's not the above
           ].join('|'),
         ')'                    // close group
       ].join(''),
@@ -18,7 +18,7 @@ export default function(expression = '()') {
   )
 
   for (
-    var o, count = 0, index = tokens.length - 1;
+    var count = 0, index = tokens.length - 1;
     0 <= index;
     index--
   ) {
@@ -46,14 +46,18 @@ export default function(expression = '()') {
       tokens[index] = JSON.parse(currentToken)
     }
 
-    // Skip integer
+    // If integer
     else if (Number.isInteger(Number(currentToken))) {
-      // Do nothing, JSON.parse gives us this for free
+      if (Math.abs(Number(currentToken)) == Number(currentToken)) {
+        tokens[index] = Number(currentToken)
+      }
     }
 
     // Skip number
     else if (currentToken == Number(currentToken)) {
-      // Do nothing, JSON.parse gives us this for free
+      if (Math.abs(Number(currentToken)) == Number(currentToken)) {
+        tokens[index] = Number(currentToken)
+      }
     }
 
     // Otherwise, handle as a string
