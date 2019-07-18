@@ -101,16 +101,95 @@
       expected: JSON.stringify([`backtick string`])
     },
 
-    // Rosetta code test
+    // String testing
     {
-      name: 'Rosetta code test',
+      name: 'emoji',
       input: () => JSON.stringify(symbolix(`
-        ((data "quoted data" 123 4.5)
-          (data (!@# (4.5) "(more" "data)")))
+        (🤔 💭)
+      `)),
+      expected: JSON.stringify(["🤔", "💭"])
+    },
+    {
+      name: 'unicode',
+      input: () => JSON.stringify(symbolix(`
+        ("uꎐꏳde ch🜇℀te₨")
+      `)),
+      expected: JSON.stringify(["uꎐꏳde ch🜇℀te₨"])
+    },
+
+    // Nesting
+    {
+      name: 'Nesting testing',
+      input: () => JSON.stringify(symbolix(`
+        (((()()()())(()()()())(()()()()))((()()()())(()()()())(()()()())))
       `)),
       expected: JSON.stringify(
-        [['data', 'quoted data', 123, 4.5],
-          ['data', ['!@#', [4.5], "(more", "data)"]]]
+        [[[[],[],[],[],],[[],[],[],[],],[[],[],[],[],],],[[[],[],[],[],],[[],[],[],[],],[[],[],[],[],],],]
+      )
+    },
+    {
+      name: 'Deep nest',
+      input: () => JSON.stringify(symbolix(`
+        ((((((((((
+          ((((((((((
+            ((((((((((
+              ((((((((((
+                ((((((((((
+                            ))))))))))
+                              ))))))))))
+                                ))))))))))
+                                  ))))))))))
+                                    ))))))))))
+      `)),
+      expected: JSON.stringify(
+                                    [[[[[[[[[[
+                                  [[[[[[[[[[
+                                [[[[[[[[[[
+                              [[[[[[[[[[
+                            [[[[[[[[[[
+                ]]]]]]]]]]
+              ]]]]]]]]]]
+            ]]]]]]]]]]
+          ]]]]]]]]]]
+        ]]]]]]]]]]
+      )
+    },
+
+    // Formats
+    {
+      name: 'Aspect ratio',
+      input: () => JSON.stringify(symbolix(`
+        (aspectRatio (width 16) (height 9))
+      `)),
+      expected: JSON.stringify(
+        ["aspectRatio", ["width", 16], ["height", 9]]
+      )
+    },
+    {
+      name: 'Clamped number',
+      input: () => JSON.stringify(symbolix(`
+        (clampedNumber 20px 5vw 100px)
+      `)),
+      expected: JSON.stringify(
+        ["clampedNumber", "20px", "5vw", "100px"]
+      )
+    },
+    {
+      name: 'Breakpoints',
+      input: () => JSON.stringify(symbolix(`
+        (breakpoints (small 200px) (medium 500px) (large 900px))
+      `)),
+      expected: JSON.stringify(
+        ["breakpoints", ["small", "200px"], ["medium", "500px"], ["large", "900px"]]
+      )
+    },
+    {
+      name: 'Something like HTML',
+      input: () => JSON.stringify(symbolix(`
+        (html p ((id one) (class demo)) ('Hello world'))
+      `)),
+      expected: JSON.stringify(
+        ["html", "p", [["id", "one"], ["class", "demo"]], ["Hello world"]]
       )
     },
 
